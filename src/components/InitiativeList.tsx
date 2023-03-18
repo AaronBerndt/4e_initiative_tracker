@@ -8,17 +8,22 @@ import {
   ListItemText,
   Stack,
   Skeleton,
+  CardHeader,
+  Button,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { find, range } from "lodash";
 import { GiDeathSkull } from "react-icons/gi";
 import { useCombat } from "../hooks/useCombat";
 import { usePusherContext } from "../context/PusherContext";
+import { stringObject } from "../constants/strings";
+import OBR from "@owlbear-rodeo/sdk";
 
 type Props = {
   combat: any;
 };
 export default function InitiativeList({ combat }: Props) {
+  const strings = stringObject.InitiativeList;
   const [items, setItems] = useState(range(combat.initiativeOrder.length));
 
   useEffect(() => {
@@ -34,6 +39,8 @@ export default function InitiativeList({ combat }: Props) {
 
   return (
     <Card>
+      <CardHeader title={strings.CurrentRoundHeader(combat.currentRound)} />
+      <CardHeader title={strings.EscalationDieHeader("0")} />
       <CardContent>
         <List>
           {items.map((item: string) => {
@@ -146,6 +153,14 @@ export default function InitiativeList({ combat }: Props) {
             );
           })}
         </List>
+        <Button onClick={() => refetch()}>Refresh</Button>
+        <Button
+          onClick={() =>
+            OBR.scene.items.deleteItems(["63e7ada9bf6864062b3d72cc"])
+          }
+        >
+          Delete
+        </Button>
       </CardContent>
     </Card>
   );

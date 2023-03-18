@@ -7,12 +7,12 @@ import "./index.css";
 import { PusherProivder } from "./context/PusherContext";
 
 const queryClient = new QueryClient();
-const NEXT_PUBLIC_KEY: any = "process.env.NEXT_PUBLIC_KEY";
+const NEXT_PUBLIC_KEY: any = import.meta.env.VITE_PUBLIC_KEY;
+console.log(import.meta.env);
 export const pusher = new Pusher(NEXT_PUBLIC_KEY, {
   cluster: "us2",
 });
 
-console.log(pusher);
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <PusherProivder pusher={pusher}>

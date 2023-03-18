@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import OBR, { buildImage, buildShape, isImage } from "@owlbear-rodeo/sdk";
+import { useState } from "react";
+import OBR, { buildImage } from "@owlbear-rodeo/sdk";
 import "./App.css";
 import { useCombat } from "./hooks/useCombat";
 import {
@@ -7,15 +7,18 @@ import {
   Card,
   CardContent,
   LinearProgress,
+  Skeleton,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import InitiativeList from "./components/InitiativeList";
+import usePusher from "./hooks/usePusher";
 
 function App() {
   const [combatId, setCombatId] = useState("");
   const { data: combatData, isLoading, refetch } = useCombat(combatId);
+  usePusher(combatId);
 
   const onFetchCombatData = async () => {
     // const characters = await OBR.scene.items.getItems();
@@ -52,7 +55,9 @@ function App() {
   if (isLoading) {
     return (
       <Card>
-        <LinearProgress />;
+        <CardContent>
+          <Skeleton />
+        </CardContent>
       </Card>
     );
   }
@@ -63,14 +68,6 @@ function App() {
         <>
           <Typography>{combatData._id}</Typography>
           <InitiativeList combat={combatData} />
-
-          <Button fullWidth onClick={onClick} variant="contained">
-            Add Characters to battle
-          </Button>
-
-          <Button fullWidth onClick={onClick} variant="contained">
-            Update Combat
-          </Button>
         </>
       )}
       <Card>
