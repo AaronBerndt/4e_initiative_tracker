@@ -154,13 +154,6 @@ export default function InitiativeList({ combat }: Props) {
           })}
         </List>
         <Button onClick={() => refetch()}>Refresh</Button>
-        <Button
-          onClick={() =>
-            OBR.scene.items.deleteItems(["63e7ada9bf6864062b3d72cc"])
-          }
-        >
-          Delete
-        </Button>
       </CardContent>
     </Card>
   );
