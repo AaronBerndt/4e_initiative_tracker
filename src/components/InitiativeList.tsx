@@ -94,7 +94,7 @@ export default function InitiativeList({ combat }: Props) {
             const hitpointsRemaining = hitpoints - damage;
 
             return (
-              <ListItem divider disablePadding>
+              <ListItem divider disablePadding key={item}>
                 <ListItemButton
                   selected={combat.currentInitiativeOrderIndex === item}
                 >
@@ -136,12 +136,14 @@ export default function InitiativeList({ combat }: Props) {
                           </span>
                           {combatant.playerId && (
                             <Stack direction="row" spacing={1}>
-                              {range(characterState.deathSaves).map((i) => (
-                                <GiDeathSkull
-                                  key={i}
-                                  style={{ color: "black" }}
-                                />
-                              ))}
+                              {range(characterState.deathSaves).map(
+                                (i: number) => (
+                                  <GiDeathSkull
+                                    key={i}
+                                    style={{ color: "black" }}
+                                  />
+                                )
+                              )}
                             </Stack>
                           )}
                         </>
