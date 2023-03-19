@@ -30,6 +30,8 @@ export default function InitiativeList({ combatId }: any) {
       <InitiativeListContent combatId={combatId} combatData={combatData} />
     );
   }
+
+  return <div />;
 }
 
 function InitiativeListContent({ combatId, combatData }: Props) {
