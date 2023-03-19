@@ -31,7 +31,7 @@ export default function InitiativeList({ combatId }: any) {
     );
   }
 
-  return <div />;
+  return <Skeleton />;
 }
 
 function InitiativeListContent({ combatId, combatData }: Props) {
