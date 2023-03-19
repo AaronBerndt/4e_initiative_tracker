@@ -22,7 +22,7 @@ type Props = {
   combatId: string;
   combatData: any;
 };
-export default function InitiativeList({ combatId }: Props) {
+export default function InitiativeList({ combatId }: any) {
   const { data: combatData, isLoading } = useCombat(combatId);
 
   if (!isLoading && combatData) {
@@ -54,7 +54,7 @@ function InitiativeListContent({ combatId, combatData }: Props) {
       <CardHeader title={strings.EscalationDieHeader("0")} />
       <CardContent>
         <List>
-          {items.map((item: string) => {
+          {items.map((item: any) => {
             let damage;
             let temporaryHitpoints;
             const combatant = find(combatData.combatants, {
