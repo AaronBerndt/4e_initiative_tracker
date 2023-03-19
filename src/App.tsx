@@ -1,30 +1,24 @@
 import { useState } from "react";
-import OBR, { buildImage } from "@owlbear-rodeo/sdk";
 import "./App.css";
-import { useCombat } from "./hooks/useCombat";
 import {
-  Button,
   Card,
   CardContent,
-  LinearProgress,
+  List,
+  ListItemButton,
   Skeleton,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import InitiativeList from "./components/InitiativeList";
 import usePusher from "./hooks/usePusher";
 import { stringObject } from "./constants/strings";
+import useCombats from "./hooks/useCombat";
 
 function App() {
   const strings = stringObject.FetchCombatCard;
   const [combatId, setCombatId] = useState("");
-  const { data: combatData, isLoading, refetch } = useCombat(combatId);
+  const { data: combats, isLoading } = useCombats();
   usePusher(combatId);
-
-  const onFetchCombatData = async () => {
-    refetch();
-  };
 
   if (isLoading) {
     return (
@@ -39,25 +33,23 @@ function App() {
   return (
     <Stack spacing={2}>
       <Stack>
-        {combatData && (
+        {combatId !== "" && (
           <>
-            <Typography>{combatData._id}</Typography>
-            <InitiativeList combat={combatData} />
+            <Typography>{combatId}</Typography>
+            <InitiativeList combatId={combatId} />
           </>
         )}
       </Stack>
 
       <Card>
         <CardContent>
-          <TextField
-            label={strings.CombatIdTextFieldLabel}
-            fullWidth
-            value={combatId}
-            onChange={(e) => setCombatId(e.target.value)}
-          />
-          <Button fullWidth onClick={onFetchCombatData} variant="contained">
-            {strings.FetchCombatButtonLabel}
-          </Button>
+          <List>
+            {combats.map(({ _id }: any) => (
+              <ListItemButton onClick={() => setCombatId(_id)}>
+                {_id}
+              </ListItemButton>
+            ))}
+          </List>
         </CardContent>
       </Card>
     </Stack>

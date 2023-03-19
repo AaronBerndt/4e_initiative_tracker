@@ -26,6 +26,7 @@ export async function addTokens(combatants: any) {
         { dpi: 300, offset: { x: 150, y: 150 } }
       )
         .id(`${_id}`)
+        .position({ x: 1000, y: 1000 })
         .layer("CHARACTER")
         .plainText(name)
         .build();

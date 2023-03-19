@@ -17,20 +17,31 @@ import { GiDeathSkull } from "react-icons/gi";
 import { useCombat } from "../hooks/useCombat";
 import { usePusherContext } from "../context/PusherContext";
 import { stringObject } from "../constants/strings";
-import OBR from "@owlbear-rodeo/sdk";
 
 type Props = {
-  combat: any;
+  combatId: string;
+  combatData: any;
 };
-export default function InitiativeList({ combat }: Props) {
+export default function InitiativeList({ combatId }: Props) {
+  const { data: combatData, isLoading } = useCombat(combatId);
+
+  if (!isLoading && combatData) {
+    return (
+      <InitiativeListContent combatId={combatId} combatData={combatData} />
+    );
+  }
+}
+
+function InitiativeListContent({ combatId, combatData }: Props) {
   const strings = stringObject.InitiativeList;
-  const [items, setItems] = useState(range(combat.initiativeOrder.length));
+  const { refetch } = useCombat(combatId);
+
+  const [items, setItems] = useState(range(combatData.initiativeOrder.length));
 
   useEffect(() => {
-    setItems(range(combat.initiativeOrder.length));
-  }, [combat.initiativeOrder]);
+    setItems(range(combatData.initiativeOrder.length));
+  }, [combatData.initiativeOrder]);
 
-  const { refetch } = useCombat(combat._id);
   const { channel } = usePusherContext();
 
   if (!items) {
@@ -39,15 +50,15 @@ export default function InitiativeList({ combat }: Props) {
 
   return (
     <Card>
-      <CardHeader title={strings.CurrentRoundHeader(combat.currentRound)} />
+      <CardHeader title={strings.CurrentRoundHeader(combatData.currentRound)} />
       <CardHeader title={strings.EscalationDieHeader("0")} />
       <CardContent>
         <List>
           {items.map((item: string) => {
             let damage;
             let temporaryHitpoints;
-            const combatant = find(combat.combatants, {
-              _id: combat.initiativeOrder[item]?.combatantId,
+            const combatant = find(combatData.combatants, {
+              _id: combatData.initiativeOrder[item]?.combatantId,
             });
 
             if (!combatant) {
@@ -64,7 +75,6 @@ export default function InitiativeList({ combat }: Props) {
             channel.bind(
               `Targeted with damage ${combatant._id}`,
               (data: any) => {
-                console.log(data);
                 refetch();
               }
             );
@@ -96,10 +106,10 @@ export default function InitiativeList({ combat }: Props) {
             return (
               <ListItem divider disablePadding key={item}>
                 <ListItemButton
-                  selected={combat.currentInitiativeOrderIndex === item}
+                  selected={combatData.currentInitiativeOrderIndex === item}
                 >
                   <ListItemAvatar>
-                    {combat.initiativeOrder[item]?.initiativeResult}
+                    {combatData.initiativeOrder[item]?.initiativeResult}
                   </ListItemAvatar>
                   <ListItemText
                     secondaryTypographyProps={{
@@ -114,11 +124,11 @@ export default function InitiativeList({ combat }: Props) {
                     }}
                     primary={
                       <Stack direction="row" spacing={10}>
-                        {combat.initiativeOrder[item]?.combatant}
+                        {combatData.initiativeOrder[item]?.combatant}
                       </Stack>
                     }
                     secondary={
-                      combat.isPlayerView && !combatant.playerId ? (
+                      combatData.isPlayerView && !combatant.playerId ? (
                         hitpointsRemaining / hitpoints <= 0 ? (
                           "Dead"
                         ) : hitpointsRemaining / hitpoints <= 0.5 ? (
