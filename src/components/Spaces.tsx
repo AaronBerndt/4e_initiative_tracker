@@ -46,7 +46,7 @@ const AttributeHeader = styled.div`
 `;
 
 export function DefenesesSpace({ defenses, speed }: DefenesesSpaceProps) {
-  const nameObject = {
+  const nameObject: any = {
     AC: "AC",
     Fortitude: "Fort",
     Reflex: "Ref",

@@ -35,7 +35,7 @@ export default function useUpdateMonsterHitpoints() {
 
         let { combatants, ...rest } = previousCombatState.data;
 
-        combatants = combatants.filter((combatant) => combatant);
+        combatants = combatants.filter((combatant: any) => combatant);
 
         console.log(combatants);
         const combatant: any = find(combatants, { _id });
@@ -87,7 +87,7 @@ export default function useUpdateMonsterHitpoints() {
         queryClient.setQueryData(COMBAT_QUERY_KEY, {
           data: {
             ...rest,
-            combatants: combatants.map((combatant) =>
+            combatants: combatants.map((combatant: any) =>
               combatant._id === _id ? newMonsterState : combatant
             ),
           },
