@@ -54,7 +54,7 @@ export function MonsterHealthWorkspaceModal({
   const [value, setValue] = useState(0);
   const { mutate: updateMonsterHitPoints } = useUpdateMonsterHitpoints();
 
-  const onClick = (type, surgeValue?: number) =>
+  const onClick = (type: any, surgeValue?: number) =>
     updateMonsterHitPoints({
       healthChangeAmount: value,
       _id,

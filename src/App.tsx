@@ -23,7 +23,7 @@ function App() {
   const [combatId, setCombatId] = useState("");
   const { data: combats, isLoading } = useCombats();
   const [currentSelectedCombatant, setCurrentSelectedCombtant] = useState(null);
-  // usePusher(combatId);
+  usePusher(combatId);
 
   console.log(combatId);
   console.log(combats);
@@ -46,20 +46,9 @@ function App() {
           ],
           async onClick(context, elementId) {
             const [{ id, position, scale }] = context.items;
-            console.log(combatId);
             const { combatants } = find(combats, { _id: combatId });
-            console.log(combatants);
             const currentCombatant = find(combatants, { _id: id });
-            console.log(currentCombatant);
             setCurrentSelectedCombtant(currentCombatant);
-            // OBR.popover.open({
-            //   id: "combatantdetails",
-            //   url: `/Test`,
-            //   height: 600,
-            //   width: 200,
-            //   anchorOrigin: { horizontal: "LEFT", vertical: "CENTER" },
-            // });
-            // }
           },
         });
       });
