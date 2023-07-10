@@ -17,6 +17,7 @@ import { GiDeathSkull } from "react-icons/gi";
 import { useCombat } from "../hooks/useCombat";
 import { usePusherContext } from "../context/PusherContext";
 import { stringObject } from "../constants/strings";
+import OBR from "@owlbear-rodeo/sdk";
 
 type Props = {
   combatId: string;
@@ -109,6 +110,15 @@ function InitiativeListContent({ combatId, combatData }: Props) {
               <ListItem divider disablePadding key={item}>
                 <ListItemButton
                   selected={combatData.currentInitiativeOrderIndex === item}
+                  onClick={() => {
+                    OBR.popover.open({
+                      id: "4eCombatantDetails/popover",
+                      url: `/${combatId}/${combatData.initiativeOrder[item].combatantId}`,
+                      height: 500,
+                      width: 500,
+                      anchorElementId: combatData.initiativeOrder[item]._id,
+                    });
+                  }}
                 >
                   <ListItemAvatar>
                     {combatData.initiativeOrder[item]?.initiativeResult}

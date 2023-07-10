@@ -48,7 +48,7 @@ export function MonsterHealthWorkspaceModal({
   _id,
   combatId,
 }: Props) {
-  const hitpointsRemaining = hitpoints - monsterState.damage;
+  const hitpointsRemaining = hitpoints - monsterState?.damage;
   const { data } = useCombat(combatId);
   const { open, toggleOpen } = useToggle();
   const [value, setValue] = useState(0);

@@ -20,16 +20,18 @@ import { DisplayCard } from "./components/DisplayCard";
 
 function App() {
   const strings = stringObject.FetchCombatCard;
-  const [combatId, setCombatId] = useState("");
+  const items = window.location.pathname.split("/");
+  const COMBAT_ID = items[1];
+  const COMBATANT_ID = items[2];
+
+  const [combatId, setCombatId] = useState(COMBAT_ID ? COMBAT_ID : "");
   const { data: combats, isLoading } = useCombats();
-  const [currentSelectedCombatant, setCurrentSelectedCombtant] = useState(null);
+  const [currentSelectedCombatant, setCurrentSelectedCombtant] = useState<any>(
+    COMBATANT_ID ? COMBATANT_ID : null
+  );
   usePusher(combatId);
 
-  console.log(combatId);
-  console.log(combats);
-
   useEffect(() => {
-    console.log(combatId);
     if (combatId) {
       OBR.onReady(() => {
         OBR.contextMenu.create({
@@ -45,22 +47,25 @@ function App() {
             },
           ],
           async onClick(context, elementId) {
-            const [{ id, position, scale }] = context.items;
-            const { combatants } = find(combats, { _id: combatId });
-            const currentCombatant = find(combatants, { _id: id });
-            setCurrentSelectedCombtant(currentCombatant);
+            const [{ id }] = context.items;
+            setCurrentSelectedCombtant(id);
           },
         });
       });
     }
   }, [combatId]);
 
-  if (currentSelectedCombatant && combatId) {
+  if (currentSelectedCombatant && combatId && !isLoading) {
+    const { combatants } = find(combats, { _id: combatId });
+    const currentCombatant = find(combatants, {
+      _id: currentSelectedCombatant,
+    });
+
     return (
       <>
         {combatId ? (
           <DisplayCard
-            currentCombatant={currentSelectedCombatant}
+            currentCombatant={currentCombatant}
             combatId={combatId}
           />
         ) : null}
