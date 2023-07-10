@@ -8,6 +8,8 @@ import { PusherProivder } from "./context/PusherContext";
 
 const queryClient = new QueryClient();
 const NEXT_PUBLIC_KEY: any = import.meta.env.VITE_PUBLIC_KEY;
+
+console.log(NEXT_PUBLIC_KEY);
 export const pusher = new Pusher(NEXT_PUBLIC_KEY, {
   cluster: "us2",
 });

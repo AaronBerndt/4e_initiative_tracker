@@ -15,12 +15,14 @@
     "@owlbear-rodeo/sdk": "^1.3.4",
     "axios": "^1.3.4",
     "framer-motion": "^10.3.2",
+    "html-react-parser": "^4.0.0",
     "lodash": "^4.17.21",
     "pusher-js": "^8.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
-    "react-query": "^3.39.3"
+    "react-query": "^3.39.3",
+    "styled-components": "^6.0.0-rc.6"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.191",
