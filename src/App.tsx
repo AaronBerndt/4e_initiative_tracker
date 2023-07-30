@@ -48,7 +48,13 @@ function App() {
           ],
           async onClick(context, elementId) {
             const [{ id }] = context.items;
-            setCurrentSelectedCombtant(id);
+            OBR.popover.open({
+              id: "4eCombatantDetails/popover",
+              url: `/${combatId}/${id}`,
+              height: 500,
+              width: 500,
+              anchorElementId: id,
+            });
           },
         });
       });
