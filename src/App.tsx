@@ -15,8 +15,10 @@ import { stringObject } from "./constants/strings";
 import useCombats from "./hooks/useCombat";
 import OBR from "@owlbear-rodeo/sdk";
 import parse from "html-react-parser";
-import { find } from "lodash";
+import { find, difference } from "lodash";
 import { DisplayCard } from "./components/DisplayCard";
+import axios from "axios";
+import useUpdateImage from "./hooks/useUpdateImage";
 
 function App() {
   const strings = stringObject.FetchCombatCard;
@@ -24,13 +26,15 @@ function App() {
   const COMBAT_ID = items[1];
   const COMBATANT_ID = items[2];
 
+  const [itemList, setItemList]: any = useState([]);
   const [combatId, setCombatId] = useState(COMBAT_ID ? COMBAT_ID : "");
   const { data: combats, isLoading } = useCombats();
+  const { mutate: updateCombatantImage } = useUpdateImage();
   const [currentSelectedCombatant, setCurrentSelectedCombtant] = useState<any>(
     COMBATANT_ID ? COMBATANT_ID : null
   );
-  usePusher(combatId);
 
+  usePusher(combatId);
   useEffect(() => {
     if (combatId) {
       OBR.onReady(() => {
@@ -60,6 +64,29 @@ function App() {
       });
     }
   }, [combatId]);
+
+  useEffect(
+    () =>
+      OBR.scene.items.onChange(async (items) => {
+        console.log(items);
+        const filteredList = items
+          .filter(({ layer }: any) => layer === "CHARACTER")
+          .map(({ image, id }: any) => ({ id, imageUrl: image.url }));
+
+        for (let item of filteredList) {
+          if (item.imageUrl !== find(items, { id: item.id })?.imageUrl) {
+            updateCombatantImage({
+              _id: item.id,
+              combatId,
+              imageUrl: item.imageUrl,
+            });
+          }
+        }
+
+        setItemList(filteredList);
+      }),
+    [setItemList, itemList]
+  );
 
   if (currentSelectedCombatant && combatId && !isLoading) {
     const { combatants } = find(combats, { _id: combatId });
