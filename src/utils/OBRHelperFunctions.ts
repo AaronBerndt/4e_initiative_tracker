@@ -30,7 +30,7 @@ export async function addTokens(combatants: any) {
         {
           height: 300,
           width: 300,
-          url: "blob:https://www.owlbear.app/2fad3bc2-0ba4-4693-8b88-7050ed8f77c8",
+          url: returnItemUrl(),
           mime: "image/png",
         },
         { dpi: 300, offset: { x: 150, y: 150 } }

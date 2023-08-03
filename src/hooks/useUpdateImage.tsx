@@ -9,7 +9,8 @@ type MutateProps = {
 
 export default function useUpdateImage() {
   return useMutation((mutateProps: MutateProps) =>
-    axios.post("https://4e-pwa.vercel.app/api/updateCombatantImage", {
+    // axios.post("https://4e-pwa.vercel.app/api/updateCombatantImage", {
+    axios.post("https://localhost:3000/api/updateCombatantImage", {
       data: mutateProps,
     })
   );
