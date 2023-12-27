@@ -14,25 +14,36 @@ import usePusher from "./hooks/usePusher";
 import { stringObject } from "./constants/strings";
 import useCombats from "./hooks/useCombat";
 import OBR from "@owlbear-rodeo/sdk";
-import parse from "html-react-parser";
 import { find } from "lodash";
 import { DisplayCard } from "./components/DisplayCard";
 
 function App() {
   const strings = stringObject.FetchCombatCard;
   const items = window.location.pathname.split("/");
-  const COMBAT_ID = items[1];
   const COMBATANT_ID = items[2];
 
-  const [combatId, setCombatId] = useState(COMBAT_ID ? COMBAT_ID : "");
+  const [combatId, setCombatId] = useState("");
+  const [ready, setReady] = useState(false);
   const { data: combats, isLoading } = useCombats();
   const [currentSelectedCombatant, setCurrentSelectedCombtant] = useState<any>(
     COMBATANT_ID ? COMBATANT_ID : null
   );
+
+  const fetchCombatIdFromMetadata = async () => {
+    const metadata = await OBR.room.getMetadata();
+
+    if (metadata.combatId !== "") {
+      setCombatId(metadata.combatId as string);
+    }
+  };
   usePusher(combatId);
 
   useEffect(() => {
-    if (combatId) {
+    if (OBR.isAvailable && !OBR.isReady) {
+      OBR.onReady(() => setReady(true));
+    }
+
+    if (OBR.isReady && combatId) {
       OBR.onReady(() => {
         OBR.contextMenu.create({
           id: `4eCombatantDetails`,
@@ -59,7 +70,11 @@ function App() {
         });
       });
     }
-  }, [combatId]);
+
+    if (!combatId) {
+      fetchCombatIdFromMetadata();
+    }
+  }, [combatId, ready]);
 
   if (currentSelectedCombatant && combatId && !isLoading) {
     const { combatants } = find(combats, { _id: combatId });
@@ -104,7 +119,12 @@ function App() {
         <CardContent>
           <List>
             {combats.map(({ _id }: any) => (
-              <ListItemButton onClick={() => setCombatId(_id)}>
+              <ListItemButton
+                onClick={() => {
+                  OBR.room.setMetadata({ combatId: _id });
+                  setCombatId(_id);
+                }}
+              >
                 {_id}
               </ListItemButton>
             ))}
