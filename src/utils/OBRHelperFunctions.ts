@@ -1,5 +1,7 @@
 import OBR, { buildImage } from "@owlbear-rodeo/sdk";
 import { find } from "lodash";
+import { createDefenseToken } from "./createDefenseToken";
+import createHealthBar from "./createHealthBar";
 
 export async function removeTokens(combatants: any) {
   const currentTokens = await OBR.scene.items.getItems();
@@ -11,12 +13,13 @@ export async function removeTokens(combatants: any) {
       }
     });
 }
+
 export async function addTokens(combatants: any) {
   const currentTokens = await OBR.scene.items.getItems();
 
-  combatants.forEach(({ name, _id }: any) => {
-    console.log(name);
+  combatants.forEach(async ({ name, _id, ...rest }: any) => {
     if (!find(currentTokens, { id: _id })) {
+      console.log(rest);
       const item = buildImage(
         {
           height: 300,
@@ -29,9 +32,59 @@ export async function addTokens(combatants: any) {
         .id(`${_id}`)
         .position({ x: 1000, y: 1000 })
         .layer("CHARACTER")
-        .plainText(name)
+        // .plainText(name)
         .build();
-      OBR.scene.items.addItems([item]);
+
+      const [armorClassShape, armorClassText] = await createDefenseToken(
+        item,
+        {
+          _id,
+          ...rest,
+        },
+        "ac"
+      );
+
+      const healthBarItems = await createHealthBar(item, { _id, ...rest });
+
+      // const [fortShape, fortText] = await createDefenseToken(
+      //   item,
+      //   {
+      //     _id,
+      //     ...rest,
+      //   },
+      //   "fort"
+      // );
+
+      // const [reflexShape, reflexText] = await createDefenseToken(
+      //   item,
+      //   {
+      //     _id,
+      //     ...rest,
+      //   },
+      //   "reflex"
+      // );
+
+      // const [willShape, willText] = await createDefenseToken(
+      //   item,
+      //   {
+      //     _id,
+      //     ...rest,
+      //   },
+      //   "will"
+      // );
+
+      OBR.scene.items.addItems([
+        item,
+        armorClassShape,
+        armorClassText,
+        // fortShape,
+        // fortText,
+        // reflexShape,
+        // reflexText,
+        // willShape,
+        // willText,
+        ...healthBarItems,
+      ]);
     }
   });
 }
