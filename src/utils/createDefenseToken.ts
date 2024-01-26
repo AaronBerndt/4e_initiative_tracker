@@ -1,27 +1,28 @@
 import OBR, { Item, buildShape, buildText } from "@owlbear-rodeo/sdk";
+import { FONT } from "./constants";
 
-const getImageBounds = (item: Image, dpi: number) => {
+const getImageBounds = (item: any, dpi: number) => {
   const dpiScale = dpi / item.grid.dpi;
   const width = item.image.width * dpiScale * item.scale.x;
   const height = item.image.height * dpiScale * item.scale.y;
   return { width, height };
 };
 
-type DefenseType = "ac" | "fort" | "reflex" | "will";
+type DefenseType = "AC" | "Fortitude" | "Reflex" | "Will";
 
 export const createDefenseToken = async (
   item: Item,
   combatant: any,
   defenseType: DefenseType
 ) => {
-  const colorObject = {
+  const colorObject: any = {
     ac: "cornflowerblue",
-    fort: "olivedrab",
+    fortitude: "olivedrab",
     reflex: "red",
     will: "purple",
   };
 
-  const color = colorObject[defenseType];
+  const color = colorObject[defenseType.toLowerCase()];
   const dpi = await OBR.scene.grid.getDpi();
   const bounds = getImageBounds(item, dpi);
   bounds.width = Math.abs(bounds.width);
@@ -67,15 +68,15 @@ export const createDefenseToken = async (
     },
   };
 
-  if (defenseType === "fort") {
-    origin = originObject.fort;
-  }
-  if (defenseType === "reflex") {
-    origin = originObject.reflex;
-  }
-  if (defenseType === "will") {
-    origin = originObject.will;
-  }
+  // if (defenseType === "fort") {
+  //   origin = originObject.fort;
+  // }
+  // if (defenseType === "reflex") {
+  //   origin = originObject.reflex;
+  // }
+  // if (defenseType === "will") {
+  //   origin = originObject.will;
+  // }
 
   let armorPosition;
   armorPosition = {
@@ -83,8 +84,25 @@ export const createDefenseToken = async (
     y: origin.y - diameter / 2 - 4 - barHeight * offsetBubbles,
   };
 
-  const font = "Lucida Console, monospace";
   const setVisibilityProperty = item.visible;
+
+  const returnDefenseValue = (defenseType: DefenseType) => {
+    let value = 0;
+    if (combatant.playerId) {
+      value = combatant.defenses[defenseType];
+    } else {
+      const defenseTypeObject: any = {
+        ac: "armorClass",
+        fortitude: "fortitude",
+        reflex: "reflex",
+        will: "will",
+      };
+
+      value = combatant[defenseTypeObject[defenseType.toLowerCase()]];
+    }
+
+    return value;
+  };
 
   const defenseShape = buildShape()
     .width(bounds.width)
@@ -96,7 +114,7 @@ export const createDefenseToken = async (
     .strokeOpacity(0.5)
     .strokeWidth(0)
     .position(
-      defenseType === "ac"
+      defenseType === "AC"
         ? { x: armorPosition.x, y: armorPosition.y }
         : { x: armorPosition.x, y: armorPosition.y }
     )
@@ -111,17 +129,15 @@ export const createDefenseToken = async (
       x: armorPosition.x - diameter / 2 - 0.5,
       y: armorPosition.y - diameter / 2 + textVerticalOffset,
     })
-    .plainText("" + combatant.armorClass)
+    .plainText("" + returnDefenseValue(defenseType))
     .textAlign("CENTER")
     .textAlignVertical("MIDDLE")
     .fontSize(circleFontSize)
-    .fontFamily(font)
+    .fontFamily(FONT)
     .textType("PLAIN")
     .height(circleTextHeight)
     .width(diameter)
     .fontWeight(400)
-    //.strokeColor("black")
-    //.strokeWidth(0)
     .attachedTo(item.id)
     .layer("TEXT")
     .locked(true)

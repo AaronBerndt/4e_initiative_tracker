@@ -2,6 +2,7 @@ import OBR, { buildImage } from "@owlbear-rodeo/sdk";
 import { find } from "lodash";
 import { createDefenseToken } from "./createDefenseToken";
 import createHealthBar from "./createHealthBar";
+import createStatItems from "./createStatItems";
 
 export async function removeTokens(combatants: any) {
   const currentTokens = await OBR.scene.items.getItems();
@@ -35,56 +36,21 @@ export async function addTokens(combatants: any) {
         // .plainText(name)
         .build();
 
-      const [armorClassShape, armorClassText] = await createDefenseToken(
-        item,
-        {
-          _id,
-          ...rest,
-        },
-        "ac"
-      );
+      const StatItems = await createStatItems(item, {
+        _id,
+        ...rest,
+      });
 
-      const healthBarItems = await createHealthBar(item, { _id, ...rest });
+      OBR.scene.items.addItems([item, ...StatItems]);
+    } else {
+      const item = find(currentTokens, { id: _id })!;
 
-      // const [fortShape, fortText] = await createDefenseToken(
-      //   item,
-      //   {
-      //     _id,
-      //     ...rest,
-      //   },
-      //   "fort"
-      // );
+      const StatItems = await createStatItems(item, {
+        _id,
+        ...rest,
+      });
 
-      // const [reflexShape, reflexText] = await createDefenseToken(
-      //   item,
-      //   {
-      //     _id,
-      //     ...rest,
-      //   },
-      //   "reflex"
-      // );
-
-      // const [willShape, willText] = await createDefenseToken(
-      //   item,
-      //   {
-      //     _id,
-      //     ...rest,
-      //   },
-      //   "will"
-      // );
-
-      OBR.scene.items.addItems([
-        item,
-        armorClassShape,
-        armorClassText,
-        // fortShape,
-        // fortText,
-        // reflexShape,
-        // reflexText,
-        // willShape,
-        // willText,
-        ...healthBarItems,
-      ]);
+      OBR.scene.items.addItems(StatItems);
     }
   });
 }

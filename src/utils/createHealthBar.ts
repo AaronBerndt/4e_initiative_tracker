@@ -1,4 +1,10 @@
-import OBR, { Item, buildShape, buildText } from "@owlbear-rodeo/sdk";
+import OBR, {
+  Item,
+  buildShape,
+  buildText,
+  ShapeType,
+} from "@owlbear-rodeo/sdk";
+import { FONT } from "./constants";
 
 const getImageBounds = (item: any, dpi: number) => {
   const dpiScale = dpi / item.grid.dpi;
@@ -21,7 +27,6 @@ async function createHealthBar(item: Item, combatant: any) {
 
   const maxHealth = combatant.hitpoints;
   const health = combatant.hitpoints - damage;
-  const font = "Lucida Console, monospace";
   const barPadding = 2;
   const dpi = await OBR.scene.grid.getDpi();
   const bounds = getImageBounds(item, dpi);
@@ -34,7 +39,6 @@ async function createHealthBar(item: Item, combatant: any) {
   const healthOpacity = 0.5;
   const diameter = 30;
   const circleFontSize = diameter - 8;
-  const circleTextHeight = diameter + 0;
   var verticalOffset: any = 0;
   const textVerticalOffset = 1.5;
   const barHeight = 20;
@@ -73,7 +77,6 @@ async function createHealthBar(item: Item, combatant: any) {
     .build();
 
   let healthPercentage = 0;
-  let temporaryHitpointsPercentage = 0;
 
   if (health <= 0) {
     healthPercentage = 0;
@@ -83,10 +86,6 @@ async function createHealthBar(item: Item, combatant: any) {
     healthPercentage = 1;
   } else {
     healthPercentage = 0;
-  }
-
-  if (temporaryHitpoints) {
-    temporaryHitpointsPercentage = health / maxHealth;
   }
 
   const healthShape = buildShape()
@@ -120,13 +119,11 @@ async function createHealthBar(item: Item, combatant: any) {
     .textAlign("CENTER")
     .textAlignVertical("MIDDLE")
     .fontSize(barFontSize)
-    .fontFamily(font)
+    .fontFamily(FONT)
     .textType("PLAIN")
     .height(barTextHeight)
     .width(barWidth)
     .fontWeight(400)
-    //.strokeColor("black")
-    //.strokeWidth(0)
     .attachedTo(item.id)
     .fillOpacity(1)
     .layer("TEXT")
