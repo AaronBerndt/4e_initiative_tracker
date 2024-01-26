@@ -1,13 +1,12 @@
 import { Item } from "@owlbear-rodeo/sdk";
-import { createDefenseToken } from "./createDefenseToken";
 import createHealthBar from "./createHealthBar";
 
 export default async function createStatItems(item: Item, combatant: any) {
-  const [armorClassShape, armorClassText] = await createDefenseToken(
-    item,
-    combatant,
-    "AC"
-  );
+  // const [armorClassShape, armorClassText] = await createDefenseToken(
+  //   item,
+  //   combatant,
+  //   "AC"
+  // );
 
   const healthBarItems = await createHealthBar(item, combatant);
 
@@ -39,5 +38,5 @@ export default async function createStatItems(item: Item, combatant: any) {
   // );
   //
   //
-  return [...healthBarItems, armorClassShape, armorClassText];
+  return [...healthBarItems];
 }
